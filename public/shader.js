@@ -34,7 +34,7 @@
   applyTheme();
 
   // Logo visible immediately
-  if (logo) logo.style.opacity = '0.85';
+  if (logo) logo.style.opacity = '';
   document.body.classList.add('loaded');
 
   // ============================================================

@@ -9,11 +9,10 @@
 * { margin: 0; padding: 0; }
 
 :root {
-  --cursor-light: url('/cursor-light.svg') 12 12;
-  --cursor-dark: url('/cursor-dark.svg') 12 12;
   --mono-font: 'Departure Mono', ui-monospace, monospace;
   --chrome-font: 'Geist Mono', ui-monospace, monospace;
   --serif-font: 'Libre Baskerville', Baskerville, 'Baskerville Old Face', serif;
+  --accent: #F97E72; /* synthwave-84 primary */
   --viewport-height: 100vh;
   --logo-left: 75px;
   --logo-top: 75px;
@@ -24,7 +23,6 @@
 }
 
 html, body {
-  cursor: var(--cursor-light), auto;
   background: #b8b8b8;
   overflow: hidden;
 }
@@ -39,22 +37,12 @@ body.has-overlay {
   background: #1a1a1a;
 }
 
-* { cursor: inherit; }
-
 a {
-  cursor: var(--cursor-light), pointer;
-}
-
-a:hover {
-  cursor: var(--cursor-dark), pointer;
+  cursor: pointer;
 }
 
 .theme-night a {
-  cursor: var(--cursor-dark), pointer;
-}
-
-.theme-night a:hover {
-  cursor: var(--cursor-light), pointer;
+  cursor: pointer;
 }
 
 /* ==========================================================================
@@ -98,6 +86,12 @@ canvas {
   color: rgba(255, 255, 255, 0.9);
   white-space: nowrap;
   opacity: 0.85;
+}
+
+.center-logo:hover .main-logo {
+  color: var(--accent) !important;
+  text-shadow: 0 0 8px rgba(249, 126, 114, 0.6);
+  opacity: 1;
 }
 
 body:has(.page[data-page-type="home"]) .center-logo {
@@ -153,10 +147,17 @@ body:has(.page[data-page-type="home"]) .center-logo {
 
 .home-hero-link,
 .home-hero-open {
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-thickness: 0.03em;
+  text-underline-offset: 0.08em;
   color: inherit;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
-  cursor: var(--cursor-light), pointer;
+  text-shadow: none;
+  cursor: pointer;
+}
+.home-hero-link:hover,
+.home-hero-open:hover {
+  color: var(--accent);
+  text-shadow: 0 0 12px rgba(249, 126, 114, 0.8);
 }
 
 /* Overlays */
@@ -204,7 +205,7 @@ body:has(.page[data-page-type="home"]) .center-logo {
   opacity: 0;
   transform: translateY(12px);
   transition: opacity 0.35s ease, transform 0.35s ease;
-  cursor: var(--cursor-dark), auto;
+  cursor: auto;
 }
 
 .updates-letter::after {
@@ -236,11 +237,11 @@ body:has(.page[data-page-type="home"]) .center-logo {
   color: rgba(25, 24, 22, 0.7);
   font-size: 1.5em;
   line-height: 1;
-  cursor: var(--cursor-dark), pointer;
+  cursor: pointer;
 }
 
 .updates-dismiss:hover {
-  color: #1c1b1a;
+  color: var(--accent);
 }
 
 .letter-body {
@@ -343,43 +344,13 @@ body:has(.page[data-page-type="home"]) .center-logo {
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.95);
   text-decoration: none;
-  text-shadow: 0 0 4px rgba(255, 255, 255, 0);
-  transition: color 0.2s ease, text-shadow 0.3s ease;
-  cursor: var(--cursor-light), pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.nav-link::after {
-  content: "";
-  width: 15px;
-  height: 15px;
-  background: url('/cursor-light.svg') center/contain no-repeat;
-  transform-origin: center;
-  flex: 0 0 auto;
-  opacity: 0;
-  transition: opacity 0.2s ease;
+  cursor: pointer;
 }
 
 .nav-link:hover {
-  color: #fff;
-  text-shadow: 0 0 4px rgba(255, 255, 255, 0.9);
-  cursor: var(--cursor-dark), pointer;
-}
-
-.nav-link:hover::after {
-  opacity: 1;
-  animation: navLinkStarSpin 0.85s linear infinite;
-}
-
-@keyframes navLinkStarSpin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .nav-link:hover::after { animation: none; }
+  color: var(--accent);
+  text-shadow: 0 0 8px rgba(249, 126, 114, 0.8);
+  cursor: pointer;
 }
 
 /* Footer */
@@ -412,17 +383,17 @@ body:has(.page[data-page-type="home"]) .center-logo {
   color: rgba(255, 255, 255, 0.95);
   font: 14px/1 var(--chrome-font);
   padding: 6px 10px;
-  cursor: var(--cursor-light), pointer;
-  transition: color 0.2s ease;
+  cursor: pointer;
 }
 
 #theme-toggle:hover {
-  color: #fff;
-  cursor: var(--cursor-dark), pointer;
+  color: var(--accent);
+  text-shadow: 0 0 8px rgba(249, 126, 114, 0.6);
+  cursor: pointer;
 }
 
-.theme-night #theme-toggle { cursor: var(--cursor-dark), pointer; }
-.theme-night #theme-toggle:hover { cursor: var(--cursor-light), pointer; }
+.theme-night #theme-toggle { cursor: pointer; }
+.theme-night #theme-toggle:hover { cursor: pointer; }
 
 /* ==========================================================================
    Responsive — Medium (< 800px)
