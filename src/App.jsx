@@ -17,8 +17,8 @@ export default function App() {
           <Route path="/features" element={<Features />} />
           <Route path="/quickstart" element={<Quickstart />} />
         </Routes>
-        <Footer />
       </main>
+      <Footer />
     </>
   )
 }
