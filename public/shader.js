@@ -115,7 +115,7 @@
 
       // --- Matte concrete palette per theme ---
       vec3 baseNight  = vec3(0.080, 0.080, 0.083);
-      vec3 lightNight = vec3(0.976, 0.494, 0.447);  // synthwave-84 primary #F97E72
+      vec3 lightNight = vec3(0.357, 0.553, 0.937);  // blue accent #5B8DEF
       vec3 baseDay    = vec3(0.50, 0.50, 0.47);
       vec3 lightDay   = vec3(1.0, 1.0, 1.0);         // uncolored white in day mode
 

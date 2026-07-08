@@ -22,7 +22,7 @@ export default function Home() {
           <p className="m-0 mt-[50px] font-serif text-[clamp(20px,2.2vw,34px)] leading-[1.3] font-normal max-w-[820px] text-white/95">
             We studied what users love about every agent harness and built it all into{' '}
             <a
-              className="text-inherit no-underline underline [text-decoration-thickness:0.03em] [text-underline-offset:0.08em] cursor-pointer hover:text-accent hover:[text-shadow:0_0_12px_rgba(249,126,114,0.8)]"
+              className="text-inherit no-underline underline [text-decoration-thickness:0.03em] [text-underline-offset:0.08em] cursor-pointer hover:text-accent hover:[text-shadow:0_0_12px_rgba(91,141,239,0.8)]"
               href="https://github.com/amoreX/furnace"
               target="_blank"
               rel="noopener noreferrer"
@@ -33,7 +33,7 @@ export default function Home() {
             <span className="block mt-7 whitespace-nowrap">
               Built in the{' '}
               <a
-                className="text-inherit no-underline underline [text-decoration-thickness:0.03em] [text-underline-offset:0.08em] cursor-pointer hover:text-accent hover:[text-shadow:0_0_12px_rgba(249,126,114,0.8)]"
+                className="text-inherit no-underline underline [text-decoration-thickness:0.03em] [text-underline-offset:0.08em] cursor-pointer hover:text-accent hover:[text-shadow:0_0_12px_rgba(91,141,239,0.8)]"
                 href="https://github.com/amoreX/furnace"
                 target="_blank"
                 rel="noopener noreferrer"

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-accent: #F97E72;
+  --color-accent: #5B8DEF;
   --font-mono: 'Departure Mono', ui-monospace, monospace;
   --font-chrome: 'Geist Mono', ui-monospace, monospace;
   --font-serif: 'Libre Baskerville', Baskerville, serif;
@@ -116,22 +116,22 @@ canvas {
   position: relative;
   padding: 14px 22px;
   font: 14px/1 'Departure Mono', ui-monospace, monospace;
-  background: rgba(249, 126, 114, 0.12);
+  background: rgba(91, 141, 239, 0.12);
   color: rgba(255, 255, 255, 0.85);
   transition: background 0.2s ease;
 }
 
 .install-block:hover {
-  background: rgba(249, 126, 114, 0.22);
+  background: rgba(91, 141, 239, 0.22);
 }
 
 .theme-night .install-block {
-  background: rgba(249, 126, 114, 0.08);
+  background: rgba(91, 141, 239, 0.08);
   color: rgba(255, 255, 255, 0.85);
 }
 
 .theme-night .install-block:hover {
-  background: rgba(249, 126, 114, 0.18);
+  background: rgba(91, 141, 239, 0.18);
 }
 
 /* Ring with offset on hover */
@@ -139,7 +139,7 @@ canvas {
   content: "";
   position: absolute;
   inset: -4px;
-  border: 1px solid rgba(249, 126, 114, 0.5);
+  border: 1px solid rgba(91, 141, 239, 0.5);
   border-radius: 2px;
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -152,7 +152,7 @@ canvas {
 
 /* Copied state — solid bg, ring stays visible */
 .install-block.copied {
-  background: rgba(249, 126, 114, 1);
+  background: rgba(91, 141, 239, 1);
 }
 
 .install-block.copied::after {
@@ -160,7 +160,7 @@ canvas {
 }
 
 .theme-night .install-block.copied {
-  background: rgba(249, 126, 114, 1);
+  background: rgba(91, 141, 239, 1);
 }
 
 /* ==========================================================================
