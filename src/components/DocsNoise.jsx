@@ -51,7 +51,7 @@ export default function DocsNoise() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="docs-noise"
+      className="absolute inset-0 w-full h-full pointer-events-none z-0 [image-rendering:pixelated]"
     />
   )
 }

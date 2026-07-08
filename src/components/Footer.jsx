@@ -49,9 +49,11 @@ export default function Footer() {
   }, [])
 
   return (
-    <footer className="footer-root">
-      <div className="footer-text">FURNACE</div>
-      <canvas ref={canvasRef} className="footer-noise" />
+    <footer className="relative z-[2000] bg-[#0e0e0e] flex items-center justify-center px-[75px] py-[80px] overflow-hidden">
+      <div className="font-mono text-[clamp(64px,12vw,160px)] font-bold text-white/90 uppercase tracking-[-0.02em] leading-none relative z-[1] select-none">
+        FURNACE
+      </div>
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-[2]" />
     </footer>
   )
 }

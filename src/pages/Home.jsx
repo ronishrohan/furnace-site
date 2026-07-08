@@ -4,6 +4,11 @@ import { FEATURES } from '../features-data.js'
 
 const INSTALL_CMD = 'npm install -g cook-furnace'
 
+const installBase =
+  'relative h-12 px-[22px] w-fit flex items-center justify-center font-mono text-[14px] leading-none ' +
+  'select-none cursor-pointer transition-[background-color,color,outline-color] duration-200 ' +
+  'outline outline-1 outline-transparent outline-offset-4 text-[#1c1b1a] night:text-white/85 '
+
 export default function Home() {
   const [copied, setCopied] = useState(false)
   const timeoutRef = useRef(null)
@@ -15,6 +20,10 @@ export default function Home() {
       timeoutRef.current = setTimeout(() => setCopied(false), 2000)
     })
   }
+
+  const installState = copied
+    ? 'bg-white night:bg-accent outline-accent/50 hover:outline-accent/50'
+    : 'bg-white hover:bg-white/90 hover:outline-accent/50 night:bg-accent/8 night:hover:bg-accent/18'
 
   return (
     <>
@@ -48,16 +57,24 @@ export default function Home() {
             </span>
           </p>
 
-          <div className="cta-row">
+          <div className="flex items-center justify-center gap-3.5 flex-wrap">
             <div
-              className={`install-block ${copied ? 'copied' : ''}`}
-              style={{ userSelect: 'none', cursor: 'pointer', width: 'fit-content', textAlign: 'center', position: 'relative' }}
+              className={`${installBase} ${installState}`}
               onClick={handleCopy}
             >
-              <code style={{ opacity: copied ? 0 : 1, transition: 'opacity 0.15s ease', whiteSpace: 'nowrap' }}>{INSTALL_CMD}</code>
-              <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: copied ? 1 : 0, transition: 'opacity 0.15s ease' }}>Copied! Start cooking now</span>
+              <code className={`whitespace-nowrap transition-opacity duration-150 ${copied ? 'opacity-0' : 'opacity-100'}`}>
+                {INSTALL_CMD}
+              </code>
+              <span
+                className={`absolute inset-0 flex items-center justify-center transition-opacity duration-150 ${copied ? 'opacity-100' : 'opacity-0'}`}
+              >
+                Copied! Start cooking now
+              </span>
             </div>
-            <Link to="/docs" className="docs-cta-button">
+            <Link
+              to="/docs"
+              className="relative h-12 inline-flex items-center justify-center px-[22px] font-mono text-[14px] uppercase tracking-[0.05em] no-underline text-white border border-white/50 bg-white/10 transition-[background-color,color,border-color] duration-200 hover:bg-white/20 hover:border-white/80 hover:text-white after:content-[''] after:absolute after:inset-[-4px] after:border after:border-white/50 after:opacity-0 after:transition-opacity after:duration-200 after:pointer-events-none hover:after:opacity-100 night:text-accent/92 night:border-accent/50 night:bg-transparent night:hover:bg-accent/12 night:hover:border-accent/80 night:hover:text-accent night:after:border-accent/50"
+            >
               Docs
             </Link>
           </div>
@@ -65,12 +82,12 @@ export default function Home() {
       </section>
 
       <section id="features-section" className="relative flex items-center justify-center px-[75px] py-[80px] min-h-screen">
-        <div className="home-features w-[min(820px,92vw)]">
+        <div className="w-[min(820px,92vw)]">
           <ul className="list-none p-0 m-0">
             {FEATURES.map((f) => (
-              <li key={f.name} className="home-feature-item">
-                <span className="home-feature-name">{f.name}</span>
-                <span className="home-feature-desc">{f.desc}</span>
+              <li key={f.name} className="py-3.5 flex flex-col gap-1 text-left first:pt-0 last:pb-0">
+                <span className="font-mono font-bold uppercase text-[13px] tracking-[0.1em] text-white/95">{f.name}</span>
+                <span className="font-serif text-[15px] leading-[1.6] text-white/65">{f.desc}</span>
               </li>
             ))}
           </ul>

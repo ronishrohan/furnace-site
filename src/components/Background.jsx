@@ -18,5 +18,11 @@ export default function Background() {
     }
   }, [])
 
-  return <canvas id="canvas" ref={canvasRef} />
+  return (
+    <canvas
+      id="canvas"
+      ref={canvasRef}
+      className="block w-screen h-screen fixed top-0 left-0 z-0 supports-[height:100dvh]:h-[100dvh]"
+    />
+  )
 }

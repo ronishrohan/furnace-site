@@ -1,12 +1,18 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
+const chromeLink =
+  'font-mono text-[14px] uppercase text-white/95 no-underline cursor-pointer hover:text-accent hover:[text-shadow:0_0_8px_rgba(91,141,239,0.8)]'
+
+const activeLink =
+  'font-mono text-[14px] uppercase no-underline text-accent [text-shadow:0_0_8px_rgba(91,141,239,0.6)]'
+
+const themeToggle =
+  'border-0 bg-none font-mono text-[14px] text-white/95 px-2.5 py-1.5 cursor-pointer hover:text-accent hover:[text-shadow:0_0_8px_rgba(91,141,239,0.6)]'
+
 export default function Chrome() {
   const location = useLocation()
   const navigate = useNavigate()
   const isDocs = location.pathname.startsWith('/docs')
-  const navClass = isDocs
-    ? 'chrome-docs-control font-mono text-[14px] uppercase no-underline cursor-pointer hover:text-accent'
-    : 'font-mono text-[14px] uppercase text-white/95 no-underline hover:text-accent hover:[text-shadow:0_0_8px_rgba(91,141,239,0.8)]'
 
   const handleFeatures = (e) => {
     e.preventDefault()
@@ -27,7 +33,7 @@ export default function Chrome() {
         <Link to="/" className="fixed left-[75px] top-[75px] z-[1000] block no-underline">
           <span
             id="logo"
-            className="block font-mono text-[18px] uppercase whitespace-nowrap text-white/90 opacity-85 hover:text-accent hover:[text-shadow:0_0_8px_rgba(91,141,239,0.6)] hover:opacity-100"
+            className="block font-mono text-[18px] uppercase whitespace-nowrap text-white/90 opacity-85 tracking-[0] hover:text-accent hover:[text-shadow:0_0_8px_rgba(91,141,239,0.6)] hover:opacity-100"
           >
             FURNACE
           </span>
@@ -39,17 +45,20 @@ export default function Chrome() {
         <a
           href="#features-section"
           onClick={handleFeatures}
-          className={navClass}
+          className={chromeLink}
         >
           Features
         </a>
-        <Link to="/quickstart" className={navClass}>
+        <Link to="/quickstart" className={chromeLink}>
           Quickstart
         </Link>
-        <Link to="/docs" className={navClass}>
+        <Link
+          to={isDocs ? '/' : '/docs'}
+          className={isDocs ? activeLink : chromeLink}
+        >
           Docs
         </Link>
-        <a href="https://github.com/amoreX/furnace" target="_blank" rel="noopener noreferrer" className={navClass}>
+        <a href="https://github.com/amoreX/furnace" target="_blank" rel="noopener noreferrer" className={chromeLink}>
           GitHub
         </a>
       </nav>
@@ -67,7 +76,7 @@ export default function Chrome() {
           id="theme-toggle"
           type="button"
           aria-label="Toggle color theme"
-          className={isDocs ? 'chrome-docs-control border-0 bg-none font-mono text-[14px] px-2.5 py-1.5 cursor-pointer hover:text-accent' : 'border-0 bg-none font-mono text-[14px] text-white/95 px-2.5 py-1.5 cursor-pointer hover:text-accent hover:[text-shadow:0_0_8px_rgba(91,141,239,0.6)]'}
+          className={themeToggle}
         >
           <span className="value"></span>
         </button>
