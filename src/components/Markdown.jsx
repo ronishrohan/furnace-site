@@ -120,11 +120,11 @@ function renderBlockReact(lines) {
 
   if (first.startsWith('- ') || first.startsWith('* ')) {
     return (
-      <ul className="m-0 mb-4 pl-5">
+      <ul className="m-0 mb-4">
         {lines
           .filter((l) => l.startsWith('- ') || l.startsWith('* '))
           .map((l, i) => (
-            <li key={i} className="mb-1.5 text-[rgba(28,27,26,0.85)] night:text-white/78">
+            <li key={i} className="py-2 border-b border-[rgba(28,27,26,0.1)] night:border-b-white/8 last:border-b-0 text-[rgba(28,27,26,0.85)] night:text-white/78">
               {renderInline(l.slice(2))}
             </li>
           ))}
