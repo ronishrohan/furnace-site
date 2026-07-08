@@ -1,4 +1,19 @@
+import { useState, useRef } from 'react'
+
+const INSTALL_CMD = 'npm install -g cook-furnace'
+
 export default function Home() {
+  const [copied, setCopied] = useState(false)
+  const timeoutRef = useRef(null)
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(INSTALL_CMD).then(() => {
+      setCopied(true)
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      timeoutRef.current = setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
   return (
     <section className="relative min-h-screen flex items-center justify-center text-center px-[75px] pb-[170px] pt-[4vh]">
       <div className="flex flex-col items-center gap-8">
@@ -30,8 +45,13 @@ export default function Home() {
           </span>
         </p>
 
-        <div className="bg-black/30 border border-white/10 px-5 py-3 font-mono text-[14px] text-white/80 backdrop-blur-sm">
-          <code>npm install -g cook-furnace</code>
+        <div
+          className={`install-block ${copied ? 'copied' : ''}`}
+          style={{ userSelect: 'none', cursor: 'pointer', width: 'fit-content', textAlign: 'center', position: 'relative' }}
+          onClick={handleCopy}
+        >
+          <code style={{ opacity: copied ? 0 : 1, transition: 'opacity 0.15s ease', whiteSpace: 'nowrap' }}>{INSTALL_CMD}</code>
+          <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: copied ? 1 : 0, transition: 'opacity 0.15s ease' }}>Copied! Start cooking now</span>
         </div>
       </div>
     </section>

@@ -111,6 +111,58 @@ canvas {
   line-height: 1.6;
 }
 
+/* Install code block — subtle translucent bg, inverts with theme */
+.install-block {
+  position: relative;
+  padding: 14px 22px;
+  font: 14px/1 'Departure Mono', ui-monospace, monospace;
+  background: rgba(249, 126, 114, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  transition: background 0.2s ease;
+}
+
+.install-block:hover {
+  background: rgba(249, 126, 114, 0.22);
+}
+
+.theme-night .install-block {
+  background: rgba(249, 126, 114, 0.08);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.theme-night .install-block:hover {
+  background: rgba(249, 126, 114, 0.18);
+}
+
+/* Ring with offset on hover */
+.install-block::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 1px solid rgba(249, 126, 114, 0.5);
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.install-block:hover::after {
+  opacity: 1;
+}
+
+/* Copied state — solid bg, ring stays visible */
+.install-block.copied {
+  background: rgba(249, 126, 114, 1);
+}
+
+.install-block.copied::after {
+  opacity: 1;
+}
+
+.theme-night .install-block.copied {
+  background: rgba(249, 126, 114, 1);
+}
+
 /* ==========================================================================
    Responsive
    ========================================================================== */
