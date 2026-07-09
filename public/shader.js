@@ -64,8 +64,8 @@
     uniform sampler2D uNormalMap;
 
     // Film grain from earendil-works/waves (martins upitis's film grain)
-    #define GRAIN_INTENSITY_DAY 0.5
-    #define GRAIN_INTENSITY_NIGHT 0.09
+    #define GRAIN_INTENSITY_DAY 0.28
+    #define GRAIN_INTENSITY_NIGHT 0.05
     #define GRAIN_SPEED 1.5
     #define GRAIN_MEAN 0.0
     #define GRAIN_VARIANCE_DAY 0.75

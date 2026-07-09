@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { FEATURES } from '../features-data.js'
+import GraphCardBackground from '../components/GraphCardBackground.jsx'
 
 const INSTALL_CMD = 'npm install -g cook-furnace'
 
@@ -12,6 +13,7 @@ const installBase =
 
 export default function Home() {
   const [copied, setCopied] = useState(false)
+  const [hovered, setHovered] = useState(null)
   const timeoutRef = useRef(null)
 
   const handleCopy = () => {
@@ -85,13 +87,29 @@ export default function Home() {
       <section id="features-section" className="relative flex items-center justify-center px-6 md:px-[75px] py-[40px] min-h-screen">
         <div className="w-[min(860px,92vw)] h-[60vh]">
           <div className="grid grid-cols-2 grid-rows-[1fr_1fr] gap-4 h-full">
-            {FEATURES.map((f) => (
+            {FEATURES.map((f, i) => (
               <div
                 key={f.name}
-                className="flex flex-col justify-between p-6 border border-white/20 bg-[#15151a] text-left"
+                className="h-full"
+                onMouseEnter={() => setHovered(i)}
+                onMouseLeave={() => setHovered(null)}
               >
-                <span className="font-mono font-bold uppercase text-[13px] tracking-[0.1em] text-white/95">{f.name}</span>
-                <span className="font-serif text-[15px] leading-[1.6] text-white/65">{f.desc}</span>
+                <GraphCardBackground
+                  normalMap={f.normalMap}
+                  threshold={f.threshold}
+                  image={f.image}
+                  accent={hovered === i}
+                  dim={hovered !== null && hovered !== i}
+                >
+                  <div
+                    className={`h-full flex flex-col justify-between p-6 border text-left transition-colors duration-300 ${
+                      hovered === i ? 'border-accent/70' : 'border-white/8'
+                    }`}
+                  >
+                    <span className="font-mono font-bold uppercase text-[13px] tracking-[0.1em] text-white/95">{f.name}</span>
+                    <span className="font-serif text-[15px] leading-[1.6] text-white/65">{f.desc}</span>
+                  </div>
+                </GraphCardBackground>
               </div>
             ))}
           </div>
