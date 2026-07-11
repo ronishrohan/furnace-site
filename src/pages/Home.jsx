@@ -11,6 +11,13 @@ const installBase =
   'border border-white/50 outline outline-1 outline-transparent outline-offset-4 ' +
   'night:border-accent/50'
 
+const aboutParagraphs = [
+  'We kept switching harnesses, and every switch meant relearning the same workflow from scratch.',
+  'Each one nailed something and dropped the rest. Great planning here, real subagents there, provider freedom somewhere else. Never all of it in one place.',
+  'So we built Furnace in the open, in the terminal, inside the repo, with the things we actually reach for every day, and made it something you can shape and evolve yourself.',
+  'That is why we did it. One harness that bends to how you already work, instead of asking you to bend to it.',
+]
+
 export default function Home() {
   const [copied, setCopied] = useState(false)
   const [hovered, setHovered] = useState(null)
@@ -81,6 +88,16 @@ export default function Home() {
               Docs
             </Link>
           </div>
+        </div>
+      </section>
+
+      <section id="about-section" className="relative min-h-screen flex items-center justify-center text-center px-6 md:px-[75px]">
+        <div className="font-serif text-[clamp(18px,1.8vw,28px)] leading-[1.5] font-normal max-w-[760px] text-white/90">
+          {aboutParagraphs.map((paragraph, index) => (
+            <p key={index} className={index === 0 ? 'm-0' : 'm-0 mt-6'}>
+              {paragraph}
+            </p>
+          ))}
         </div>
       </section>
 
