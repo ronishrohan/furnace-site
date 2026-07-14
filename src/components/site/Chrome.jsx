@@ -1,13 +1,19 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
+import { useTheme } from '../../hooks/useTheme.js'
+
+const VERSION_FALLBACK = '0.0.0'
+const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/
 
 function useAnimatedVersion(target) {
-  const [display, setDisplay] = useState('0.0.0')
+  const [display, setDisplay] = useState(VERSION_FALLBACK)
   const rafRef = useRef(null)
 
   useEffect(() => {
     if (!target) return
-    const parts = target.split('.').map(Number)
+    const [, core, suffix = ''] = target.match(/^(\d+\.\d+\.\d+)(.*)$/) || []
+    if (!core) return
+    const parts = core.split('.').map(Number)
     // Segments with target=0 stay at 0; others roll one full extra cycle before landing
     const totals = parts.map((v) => (v === 0 ? 0 : v + 10))
     const DURATION = 400
@@ -21,9 +27,9 @@ function useAnimatedVersion(target) {
         const raw = Math.floor(eased * totals[i])
         return ((raw % 10) + 10) % 10  // safe modulo, always non-negative
       })
-      setDisplay(current.join('.'))
+      setDisplay(`${current.join('.')}${suffix}`)
       if (t < 1) rafRef.current = requestAnimationFrame(tick)
-      else setDisplay(parts.join('.'))
+      else setDisplay(target)
     }
 
     rafRef.current = requestAnimationFrame(tick)
@@ -40,32 +46,48 @@ const activeLink =
   'font-mono text-[14px] uppercase no-underline text-accent accent-glow'
 
 const themeToggle =
-  'border-0 bg-none font-mono text-[14px] text-white/95 px-2.5 py-1.5 cursor-pointer hover:text-accent hover-accent-glow'
+  'border-0 bg-none font-mono text-[14px] text-white/95 px-2.5 py-1.5 cursor-pointer hover:text-accent hover-accent-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2'
 
 export default function Chrome() {
   const location = useLocation()
   const navigate = useNavigate()
   const isDocs = location.pathname.startsWith('/docs')
-  const [version, setVersion] = useState(null)
+  const [version, setVersion] = useState(VERSION_FALLBACK)
   const animatedVersion = useAnimatedVersion(version)
+  const { isNight, toggleTheme } = useTheme()
 
   useEffect(() => {
-    fetch('https://registry.npmjs.org/cook-furnace/latest')
-      .then((r) => r.json())
-      .then((d) => setVersion(d.version))
-      .catch(() => {})
+    const controller = new AbortController()
+
+    async function fetchVersion() {
+      try {
+        const response = await fetch('https://registry.npmjs.org/cook-furnace/latest', {
+          signal: controller.signal,
+        })
+        if (!response.ok) return
+        const data = await response.json()
+        if (
+          !controller.signal.aborted
+          && typeof data.version === 'string'
+          && VERSION_PATTERN.test(data.version)
+        ) {
+          setVersion(data.version)
+        }
+      } catch {
+        // Keep the stable fallback for network errors and malformed responses.
+      }
+    }
+
+    fetchVersion()
+    return () => controller.abort()
   }, [])
 
   const handleFeatures = (e) => {
     e.preventDefault()
-    if (location.pathname === '/') {
-      document.getElementById('features-section')?.scrollIntoView({ behavior: 'smooth' })
-    } else {
-      navigate('/')
-      setTimeout(() => {
-        document.getElementById('features-section')?.scrollIntoView({ behavior: 'smooth' })
-      }, 100)
-    }
+    navigate('/', {
+      replace: location.pathname === '/',
+      state: { scrollToHomeSection: 'features-section' },
+    })
   }
 
   return (
@@ -74,7 +96,7 @@ export default function Chrome() {
       {!isDocs && (
         <Link to="/" className="fixed left-[75px] top-[75px] z-[1000] flex items-center gap-2.5 no-underline group opacity-85 hover:opacity-100">
           <img
-            src="/furnace-logo.svg"
+            src="/assets/brand/furnace-logo.svg"
             alt="Furnace"
             width="20"
             height="20"
@@ -82,7 +104,6 @@ export default function Chrome() {
             className="[filter:brightness(0)_invert(1)] night:[filter:none]"
           />
           <span
-            id="logo"
             className="accent-glow-target font-mono text-[18px] uppercase whitespace-nowrap text-white/90 tracking-[0] group-hover:text-accent"
           >
             FURNACE
@@ -114,7 +135,6 @@ export default function Chrome() {
       {!isDocs && (
         <div className="fixed bottom-[75px] left-[75px] z-[200] flex items-center gap-3">
           <a
-            id="site-footer"
             href="https://www.npmjs.com/package/cook-furnace"
             target="_blank"
             rel="noopener noreferrer"
@@ -149,8 +169,9 @@ export default function Chrome() {
           type="button"
           aria-label="Toggle color theme"
           className={themeToggle}
+          onClick={toggleTheme}
         >
-          <span className="value"></span>
+          <span className="value">{isNight ? 'DAY' : 'NIGHT'}</span>
         </button>
       </div>
     </>

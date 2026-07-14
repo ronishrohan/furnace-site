@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
-import Coin from './Coin.jsx'
+import { useState } from 'react'
+import Coin from '../effects/Coin.jsx'
+import NoiseCanvas from '../effects/NoiseCanvas.jsx'
 
 const NIHAL = { key: 'nihal', name: 'Nihal Rahman', handle: '@nihaliscoding', href: 'https://x.com/nihaliscoding' }
 const RONISH = { key: 'ronish', name: 'Ronish Rohan', handle: '@ronish1o', href: 'https://x.com/ronish1o' }
@@ -68,53 +69,7 @@ function OrbitClicks({ visible }) {
 }
 
 export default function Footer() {
-  const canvasRef = useRef(null)
-  const rafRef = useRef(null)
   const [hovered, setHovered] = useState(null) // 'nihal' | 'ronish' | null
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-
-    function resize() {
-      canvas.width = canvas.offsetWidth
-      canvas.height = canvas.offsetHeight
-    }
-    resize()
-
-    const ro = new ResizeObserver(resize)
-    ro.observe(canvas)
-
-    let t = 0
-    function draw() {
-      const { width, height } = canvas
-      if (!width || !height) { rafRef.current = requestAnimationFrame(draw); return }
-
-      const img = ctx.createImageData(width, height)
-      const data = img.data
-      t += 0.5
-
-      for (let i = 0; i < data.length; i += 4) {
-        const noise = (Math.random() * 255) | 0
-        const alpha = (noise * 0.18) | 0
-        data[i] = 255
-        data[i + 1] = 255
-        data[i + 2] = 255
-        data[i + 3] = alpha
-      }
-
-      ctx.putImageData(img, 0, 0)
-      rafRef.current = requestAnimationFrame(draw)
-    }
-
-    draw()
-
-    return () => {
-      cancelAnimationFrame(rafRef.current)
-      ro.disconnect()
-    }
-  }, [])
 
   return (
     <footer id="site-footer" className="relative z-[2000] bg-[#0e0e0e] flex items-center justify-center gap-[clamp(16px,3vw,48px)] px-6 md:px-[75px] py-[80px] overflow-hidden">
@@ -139,7 +94,11 @@ export default function Footer() {
               aria-label="Nihal on X"
               className={`block transition-transform duration-300 origin-center ${hovered === 'nihal' ? 'scale-[0.72]' : 'scale-100'}`}
             >
-              <Coin size={120} normalMap="/nihal_normal.png" showRing={false} />
+              <Coin
+                size={120}
+                normalMap="/assets/contributors/nihal-normal-map.png"
+                active={hovered !== 'ronish'}
+              />
             </a>
             <OrbitClicks visible={hovered === 'nihal'} />
           </div>
@@ -162,7 +121,12 @@ export default function Footer() {
               aria-label="Ronish on X"
               className={`block transition-transform duration-300 origin-center ${hovered === 'ronish' ? 'scale-[0.72]' : 'scale-100'}`}
             >
-              <Coin size={120} normalMap="/ronish_normal.png" flipX showRing={false} />
+              <Coin
+                size={120}
+                normalMap="/assets/contributors/ronish-normal-map.png"
+                flipX
+                active={hovered !== 'nihal'}
+              />
             </a>
             <OrbitClicks visible={hovered === 'ronish'} />
           </div>
@@ -171,7 +135,10 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-[2]" />
+      <NoiseCanvas
+        alpha={0.18}
+        className="absolute inset-0 w-full h-full pointer-events-none z-[2] [image-rendering:pixelated]"
+      />
     </footer>
   )
 }

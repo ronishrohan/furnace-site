@@ -1,4 +1,5 @@
-import { useState, Fragment } from 'react'
+import { Fragment } from 'react'
+import { useClipboardFeedback } from '../../hooks/useClipboardFeedback.js'
 
 const inlineCode =
   'font-chrome text-[12.5px] bg-[rgba(28,27,26,0.06)] night:bg-white/8 px-[5px] py-[2px] rounded-[2px] text-[#1c1b1a] night:text-white/95'
@@ -35,21 +36,14 @@ function renderInline(text) {
 }
 
 function CopyButton({ code, centered = false }) {
-  const [copied, setCopied] = useState(false)
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(code).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }
+  const { copied, copy } = useClipboardFeedback()
 
   return (
     <button
       type="button"
-      onClick={handleCopy}
+      onClick={() => copy(code)}
       aria-label="Copy code"
-      className={`absolute right-2.5 ${centered ? 'top-1/2 -translate-y-1/2' : 'top-2.5'} font-chrome text-[11px] uppercase tracking-[0.05em] px-2.5 py-1.5 border border-[rgba(28,27,26,0.15)] night:border-white/15 bg-[rgba(250,250,249,0.9)] night:bg-[rgba(20,20,22,0.9)] text-[rgba(28,27,26,0.7)] night:text-white/70 cursor-pointer transition-colors duration-150 hover:text-accent hover:border-accent/50`}
+      className={`absolute right-2.5 ${centered ? 'top-1/2 -translate-y-1/2' : 'top-2.5'} font-chrome text-[11px] uppercase tracking-[0.05em] px-2.5 py-1.5 border border-[rgba(28,27,26,0.15)] night:border-white/15 bg-[rgba(250,250,249,0.9)] night:bg-[rgba(20,20,22,0.9)] text-[rgba(28,27,26,0.7)] night:text-white/70 cursor-pointer transition-colors duration-150 hover:text-accent hover:border-accent/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2`}
     >
       {copied ? 'Copied' : 'Copy'}
     </button>
@@ -162,7 +156,7 @@ function renderBlockReact(lines) {
   return <p className="m-0 mb-4 text-[rgba(28,27,26,0.85)] night:text-white/78">{renderInline(lines.join(' '))}</p>
 }
 
-export function renderMarkdownReact(source) {
+function renderMarkdownReact(source) {
   const blocks = []
   let current = []
   let inCode = false

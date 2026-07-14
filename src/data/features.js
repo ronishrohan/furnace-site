@@ -2,25 +2,25 @@ export const FEATURES = [
   {
     name: '/Fork Any Conversation',
     desc: 'Furnace keeps a tree of your conversation, so you can branch off to explore any direction without losing your original work.',
-    normalMap: '/graph_normal.png',
-    image: '/graph.png',
+    normalMap: '/assets/features/fork-conversation-normal-map.png',
+    image: '/assets/features/fork-conversation.png',
   },
   {
     name: 'Saves Tokens by Indexing',
     desc: 'Furnace builds an index for every project, giving your agent the context it needs before you even start.',
-    normalMap: '/money_normal.png',
-    image: '/money.png',
+    normalMap: '/assets/features/token-indexing-normal-map.png',
+    image: '/assets/features/token-indexing.png',
   },
   {
     name: 'Bring Your Own Keys',
     desc: 'OpenRouter, OpenAI, Anthropic, DeepSeek, GLM, or any compatible provider. Your keys, your models, your rules.',
-    normalMap: '/hand_normal.png',
-    image: '/hand.png',
+    normalMap: '/assets/features/bring-your-own-keys-normal-map.png',
+    image: '/assets/features/bring-your-own-keys.png',
   },
   {
     name: '/Evolve Your Agent',
     desc: 'Everything in Furnace is customizable. Just ask for changes, like "add a monochrome theme to Furnace".',
-    normalMap: '/evolve_normal.png',
-    image: '/evolve.png',
+    normalMap: '/assets/features/evolve-agent-normal-map.png',
+    image: '/assets/features/evolve-agent.png',
   },
 ]

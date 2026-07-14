@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom'
-import DocsLayout from '../components/DocsLayout.jsx'
-import Markdown from '../components/Markdown.jsx'
+import DocsLayout from '../components/docs/DocsLayout.jsx'
+import Markdown from '../components/docs/Markdown.jsx'
 
 import gettingStarted from '../../docs/getting-started.md?raw'
 import commands from '../../docs/commands.md?raw'

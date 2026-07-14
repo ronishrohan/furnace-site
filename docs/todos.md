@@ -10,7 +10,7 @@
 - [x] Draft landing page copy and section structure for Furnace
 - [x] Create hero section: value prop, install command, primary CTA
 - [x] Create feature sections: terminal UI, sessions, tools, permissions, subagents
-- [x] Add docs section with multiple pages and quickstart snippets
+- [x] Add docs section with multiple pages and getting-started snippets
 - [x] Add GitHub link, version badge, and license note
 
 ## Phase 3: Design & Build
@@ -24,5 +24,5 @@
 ## Phase 4: Polish & Verify
 - [x] Run lint/build/type checks and verify all scripts pass
 - [x] Test responsive behavior across breakpoints
-- [x] Optimize assets and ensure fast load (preloaded fonts, normal map, shader)
+- [x] Optimize assets and ensure fast load (self-hosted fonts and normal maps)
 - [ ] Final review against reference aesthetic
