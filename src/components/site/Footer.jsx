@@ -136,8 +136,7 @@ export default function Footer() {
         </div>
       </div>
       <NoiseCanvas
-        alpha={0.18}
-        className="absolute inset-0 w-full h-full pointer-events-none z-[2] [image-rendering:pixelated]"
+        className="absolute inset-0 w-full h-full pointer-events-none z-[2]"
       />
     </footer>
   )
