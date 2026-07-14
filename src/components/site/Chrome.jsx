@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import { useTheme } from '../../hooks/useTheme.js'
+import CommandTeaser from './CommandTeaser.jsx'
 
 const VERSION_FALLBACK = '0.0.0'
 const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/
@@ -90,6 +91,14 @@ export default function Chrome() {
     })
   }
 
+  const handleTalkToUs = (e) => {
+    e.preventDefault()
+    navigate('/', {
+      replace: location.pathname === '/',
+      state: { scrollToHomeSection: 'site-footer' },
+    })
+  }
+
   return (
     <>
       <nav className="fixed inset-x-0 top-0 z-[1000] flex h-14 items-center justify-between px-4 md:hidden">
@@ -156,11 +165,20 @@ export default function Chrome() {
         <a href="https://github.com/amoreX/furnace" target="_blank" rel="noopener noreferrer" className={chromeLink}>
           GitHub
         </a>
+        {!isDocs && (
+          <button
+            type="button"
+            onClick={handleTalkToUs}
+            className={`${chromeLink} border-0 bg-transparent p-0`}
+          >
+            Talk To Us
+          </button>
+        )}
       </nav>
 
       {/* Footer label — bottom left */}
       {!isDocs && (
-        <div className="fixed bottom-[75px] left-[75px] z-[200] hidden md:flex flex-wrap items-center gap-3">
+        <div className="fixed bottom-[75px] left-[75px] right-[180px] z-[200] hidden md:flex items-center gap-3 min-w-0">
           <a
             href="https://www.npmjs.com/package/cook-furnace"
             target="_blank"
@@ -178,14 +196,10 @@ export default function Chrome() {
           >
             OPEN AN ISSUE
           </a>
-          <span className="text-white/30 text-[8px] sm:text-[10px] select-none">■</span>
-          <button
-            type="button"
-            onClick={() => { const root = document.getElementById('root'); if (root) root.scrollTo({ top: root.scrollHeight, behavior: 'smooth' }) }}
-            className="font-mono text-[11px] sm:text-[14px] text-white/95 px-1 sm:px-2.5 py-1.5 bg-transparent border-0 no-underline hover:underline cursor-pointer whitespace-nowrap"
-          >
-            TALK TO US
-          </button>
+          <span className="text-white/30 text-[8px] sm:text-[10px] select-none min-[2000px]:hidden">■</span>
+          <div className="min-w-0 overflow-hidden min-[2000px]:hidden">
+            <CommandTeaser className="block truncate font-mono text-[11px] sm:text-[14px] text-white/65 whitespace-nowrap" />
+          </div>
         </div>
       )}
 

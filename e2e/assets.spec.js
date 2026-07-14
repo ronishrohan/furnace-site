@@ -8,31 +8,30 @@ const CONTRIBUTOR_ASSETS = [
 ]
 const FEATURE_PAIRS = [
   {
-    image: '/assets/features/fork-conversation.png',
+    image: '/assets/features/fork-conversation.avif',
     normalMap: '/assets/features/fork-conversation-normal-map.png',
     width: 1672,
     height: 941,
   },
   {
-    image: '/assets/features/token-indexing.png',
+    image: '/assets/features/token-indexing.avif',
     normalMap: '/assets/features/token-indexing-normal-map.png',
     width: 1448,
     height: 1086,
   },
   {
-    image: '/assets/features/bring-your-own-keys.png',
+    image: '/assets/features/bring-your-own-keys.avif',
     normalMap: '/assets/features/bring-your-own-keys-normal-map.png',
     width: 1448,
     height: 1086,
   },
   {
-    image: '/assets/features/evolve-agent.png',
+    image: '/assets/features/evolve-agent.avif',
     normalMap: '/assets/features/evolve-agent-normal-map.png',
     width: 1448,
     height: 1086,
   },
 ]
-const FEATURE_ASSETS = FEATURE_PAIRS.flatMap(({ image, normalMap }) => [image, normalMap])
 const OLD_ASSET_PATHS = new Set([
   '/evolve.png',
   '/evolve_normal.png',
@@ -50,6 +49,10 @@ const OLD_ASSET_PATHS = new Set([
   '/normal-map.png',
   '/paper.png',
   '/ronish_normal.png',
+  '/assets/features/bring-your-own-keys.png',
+  '/assets/features/evolve-agent.png',
+  '/assets/features/fork-conversation.png',
+  '/assets/features/token-indexing.png',
 ])
 
 function recordNetwork(page) {
@@ -115,17 +118,18 @@ for (const route of ['/', '/features', '/docs']) {
   })
 }
 
-test('homepage defers feature and contributor textures until their sections approach the viewport', async ({ page }) => {
+test('homepage preloads feature illustrations and defers shader textures until their sections approach the viewport', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 1200 })
   const network = recordNetwork(page)
   await page.goto('/', { waitUntil: 'networkidle' })
 
-  for (const asset of [...FEATURE_ASSETS, ...CONTRIBUTOR_ASSETS]) {
+  for (const asset of [...FEATURE_PAIRS.map(({ normalMap }) => normalMap), ...CONTRIBUTOR_ASSETS]) {
     expect(network.requests).not.toContain(asset)
   }
+  for (const { image } of FEATURE_PAIRS) expect(network.requests).toContain(image)
 
   await page.locator('#features-section').scrollIntoViewIfNeeded()
-  await expect.poll(() => FEATURE_ASSETS.every((asset) => network.requests.has(asset))).toBe(true)
+  await expect.poll(() => FEATURE_PAIRS.every(({ normalMap }) => network.requests.has(normalMap))).toBe(true)
   for (const asset of CONTRIBUTOR_ASSETS) expect(network.requests).not.toContain(asset)
 
   await page.locator('#site-footer').scrollIntoViewIfNeeded()

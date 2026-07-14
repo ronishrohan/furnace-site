@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import FeatureGrid from '../components/features/FeatureGrid.jsx'
+import CommandTeaser from '../components/site/CommandTeaser.jsx'
 import { useClipboardFeedback } from '../hooks/useClipboardFeedback.js'
 
 const INSTALL_CMD = 'npm install -g cook-furnace'
@@ -93,6 +94,7 @@ export default function Home() {
         >
           Early stages, open an issue if something feels off
         </a>
+        <CommandTeaser className="absolute bottom-[75px] left-1/2 hidden min-[2000px]:block -translate-x-1/2 font-mono text-[14px] text-white/65 whitespace-nowrap" />
         <div className="flex flex-col items-center gap-6 sm:gap-8">
           <p className="m-0 mt-[46px] sm:mt-[50px] font-serif text-[clamp(19px,5.2vw,34px)] leading-[1.35] sm:leading-[1.3] font-normal max-w-[820px] text-white/95">
             <W r={r} idx={0}>We</W>{' '}
