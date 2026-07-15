@@ -118,23 +118,37 @@ for (const route of ['/', '/features', '/docs']) {
   })
 }
 
-test('homepage preloads feature illustrations and defers shader textures until their sections approach the viewport', async ({ page }) => {
+test('homepage loads every feature and contributor texture before scrolling', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 1200 })
   const network = recordNetwork(page)
   await page.goto('/', { waitUntil: 'networkidle' })
 
   for (const asset of [...FEATURE_PAIRS.map(({ normalMap }) => normalMap), ...CONTRIBUTOR_ASSETS]) {
-    expect(network.requests).not.toContain(asset)
+    expect(network.requests).toContain(asset)
   }
   for (const { image } of FEATURE_PAIRS) expect(network.requests).toContain(image)
+  expect(network.failures).toEqual([])
+})
+
+test('offscreen feature and contributor canvases retain their WebGL contexts', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/', { waitUntil: 'networkidle' })
 
   await page.locator('#features-section').scrollIntoViewIfNeeded()
-  await expect.poll(() => FEATURE_PAIRS.every(({ normalMap }) => network.requests.has(normalMap))).toBe(true)
-  for (const asset of CONTRIBUTOR_ASSETS) expect(network.requests).not.toContain(asset)
-
   await page.locator('#site-footer').scrollIntoViewIfNeeded()
-  await expect.poll(() => CONTRIBUTOR_ASSETS.every((asset) => network.requests.has(asset))).toBe(true)
-  expect(network.failures).toEqual([])
+  await page.locator('main > section').first().scrollIntoViewIfNeeded()
+  await page.waitForTimeout(3500)
+
+  const contextsAreAvailable = await page.evaluate(() => {
+    const featureCanvases = [...document.querySelectorAll('#features-section canvas')]
+    const contributorCanvases = [...document.querySelectorAll('#site-footer a canvas')]
+    return [...featureCanvases, ...contributorCanvases].every((canvas) => {
+      const gl = canvas.getContext('webgl')
+      return gl && !gl.isContextLost()
+    })
+  })
+
+  expect(contextsAreAvailable).toBe(true)
 })
 
 test('feature illustrations and normal maps load at matching dimensions', async ({ page }) => {

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { getPointerPosition, retainGlobalPointer } from '../effects/pointer.js'
 import useActivityRenderLoop from '../effects/useActivityRenderLoop.js'
-import useViewportVisibility from '../effects/useViewportVisibility.js'
 import {
   cancelTextureLoads,
   createFullscreenQuad,
@@ -107,7 +106,6 @@ export default function GraphCardBackground({ normalMap = '/assets/features/fork
   const rendererRef = useRef(null)
   const cancelContextReleaseRef = useRef(null)
   const targetRef = useRef(accent ? 1 : 0)
-  const { hasEntered, isNearViewport, isInViewport } = useViewportVisibility(canvasRef)
 
   useEffect(() => {
     targetRef.current = accent ? 1 : 0
@@ -147,7 +145,7 @@ export default function GraphCardBackground({ normalMap = '/assets/features/fork
 
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas || !isNearViewport) return undefined
+    if (!canvas) return undefined
     cancelContextReleaseRef.current?.()
     cancelContextReleaseRef.current = null
 
@@ -265,22 +263,20 @@ export default function GraphCardBackground({ normalMap = '/assets/features/fork
       destroyRenderer()
       cancelContextReleaseRef.current = scheduleWebGLContextRelease(currentContext)
     }
-  }, [isNearViewport, normalMap])
+  }, [normalMap])
 
   const requestRender = useActivityRenderLoop(canvasRef, draw, {
-    enabled: isNearViewport && isInViewport,
-    observeOffscreen: false,
     redrawOnThemeChange: true,
   })
 
   return (
     <div className="relative w-full h-full bg-[#15151a]">
-      {image && hasEntered && (
+      {image && (
         <img
           src={image}
           alt=""
           aria-hidden="true"
-          loading="lazy"
+          loading="eager"
           decoding="async"
           style={{ opacity: dim ? 0 : 0.15 }}
           className="absolute inset-0 w-full h-full object-cover grayscale pointer-events-none select-none transition-opacity duration-300"

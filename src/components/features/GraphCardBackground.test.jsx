@@ -7,14 +7,16 @@ const requestRender = vi.hoisted(() => vi.fn())
 vi.mock('../effects/useActivityRenderLoop.js', () => ({
   default: () => requestRender,
 }))
-vi.mock('../effects/useViewportVisibility.js', () => ({
-  default: () => ({ hasEntered: false, isInViewport: false, isNearViewport: false }),
-}))
 
 describe('GraphCardBackground accent rendering', () => {
   beforeEach(() => {
     requestRender.mockClear()
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true })))
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null)
+    vi.stubGlobal('ResizeObserver', class {
+      observe() {}
+      disconnect() {}
+    })
   })
 
   afterEach(() => {

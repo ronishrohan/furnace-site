@@ -3,7 +3,6 @@ import { act, cleanup, fireEvent, render } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Background from '../Background.jsx'
 import useActivityRenderLoop from '../useActivityRenderLoop.js'
-import useViewportVisibility from '../useViewportVisibility.js'
 import {
   loadTexture,
   releaseWebGLContext,
@@ -22,12 +21,6 @@ function LoopHarness({ draw, observeOffscreen = true, redrawOnThemeChange = fals
       <button type="button" onClick={requestRender}>Render</button>
     </>
   )
-}
-
-function VisibilityHarness() {
-  const targetRef = useRef(null)
-  const visibility = useViewportVisibility(targetRef)
-  return <div ref={targetRef} data-near={visibility.isNearViewport} />
 }
 
 describe('render lifecycle', () => {
@@ -223,29 +216,6 @@ describe('render lifecycle', () => {
     expect(animationFrames).toHaveLength(0)
     expect(mediaListeners).toHaveLength(0)
     expect(observer.disconnect).toHaveBeenCalledOnce()
-  })
-
-  it('keeps near-viewport resources through brief boundary reversals', () => {
-    vi.useFakeTimers()
-    const { container } = render(<VisibilityHarness />)
-    const target = container.firstChild
-    const nearObserver = intersectionObservers.find(({ options }) => options.rootMargin === '200px')
-
-    act(() => nearObserver.callback([{ target, isIntersecting: true }]))
-    expect(target).toHaveAttribute('data-near', 'true')
-
-    act(() => nearObserver.callback([{ target, isIntersecting: false }]))
-    act(() => vi.advanceTimersByTime(2500))
-    expect(target).toHaveAttribute('data-near', 'true')
-
-    act(() => nearObserver.callback([{ target, isIntersecting: true }]))
-    act(() => vi.advanceTimersByTime(3000))
-    expect(target).toHaveAttribute('data-near', 'true')
-
-    act(() => nearObserver.callback([{ target, isIntersecting: false }]))
-    act(() => vi.advanceTimersByTime(3000))
-    expect(target).toHaveAttribute('data-near', 'false')
-    vi.useRealTimers()
   })
 
   it('ignores a delayed texture callback after disposal', () => {

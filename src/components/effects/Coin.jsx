@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { getPointerPosition, retainGlobalPointer } from './pointer.js'
 import useActivityRenderLoop from './useActivityRenderLoop.js'
-import useViewportVisibility from './useViewportVisibility.js'
 import {
   cancelTextureLoads,
   createFullscreenQuad,
@@ -70,7 +69,6 @@ export default function Coin({ size, normalMap, flipX = false, active = true }) 
   const canvasRef = useRef(null)
   const rendererRef = useRef(null)
   const cancelContextReleaseRef = useRef(null)
-  const { isNearViewport, isInViewport } = useViewportVisibility(canvasRef)
 
   const draw = useCallback(() => {
     const renderer = rendererRef.current
@@ -100,7 +98,7 @@ export default function Coin({ size, normalMap, flipX = false, active = true }) 
 
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas || !isNearViewport) return undefined
+    if (!canvas) return undefined
     cancelContextReleaseRef.current?.()
     cancelContextReleaseRef.current = null
 
@@ -202,11 +200,10 @@ export default function Coin({ size, normalMap, flipX = false, active = true }) 
       destroyRenderer()
       cancelContextReleaseRef.current = scheduleWebGLContextRelease(currentContext)
     }
-  }, [isNearViewport, normalMap])
+  }, [normalMap])
 
   const requestRender = useActivityRenderLoop(canvasRef, draw, {
-    enabled: active && isNearViewport && isInViewport,
-    observeOffscreen: false,
+    enabled: active,
   })
 
   return (
