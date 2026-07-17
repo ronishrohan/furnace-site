@@ -101,7 +101,7 @@ test.beforeEach(async ({ context }) => {
   )
 })
 
-for (const route of ['/', '/features', '/docs']) {
+for (const route of ['/', '/features', '/changelog', '/docs']) {
   test(`${route} loads its owned assets without failures or legacy requests`, async ({ page }) => {
     const network = recordNetwork(page)
     await page.goto(route, { waitUntil: 'networkidle' })

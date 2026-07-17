@@ -6,6 +6,7 @@ import Footer from './components/site/Footer.jsx'
 import Home from './pages/Home.jsx'
 import Features from './pages/Features.jsx'
 import Docs from './pages/Docs.jsx'
+import Changelog from './pages/Changelog.jsx'
 
 export default function App() {
   const location = useLocation()
@@ -25,6 +26,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/features" element={<Features />} />
+          <Route path="/changelog" element={<Changelog />} />
           <Route path="/docs" element={<Docs />} />
           <Route path="/docs/:section" element={<Docs />} />
         </Routes>

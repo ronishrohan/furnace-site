@@ -29,6 +29,7 @@ npm test            # Vitest unit/component suite
 npm run test:watch  # Vitest watch mode
 npm run test:e2e    # full Playwright suite
 npm run check       # unit tests, then production build
+npm run releases:sync # sync Git-derived release notes from Furnace
 ```
 
 ## Project structure
@@ -51,7 +52,7 @@ src/
     site/               # Global chrome and footer
   data/                 # Feature content and asset paths
   hooks/                # Theme and clipboard state
-  pages/                # Home, Features, and Docs routes
+  pages/                # Home, Features, Changelog, and Docs routes
   test/                 # Shared Vitest setup
   App.jsx               # Routing and persistent site layers
   index.css             # Tailwind entry, theme tokens, and global styles

@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test'
 const routes = [
   ['/', /We studied what users love/],
   ['/features', /Fork Any Conversation/],
+  ['/changelog', /Every shipped turn of the furnace/],
   ['/docs', /Getting Started/],
   ['/docs/getting-started', /Getting Started/],
   ['/docs/commands', /Commands/],
@@ -54,13 +55,40 @@ test('keeps the React-owned background canvas stable across route changes', asyn
     }
   })
 
-  for (const path of ['/', '/docs/getting-started', '/features', '/']) {
+  for (const path of ['/', '/docs/getting-started', '/changelog', '/features', '/']) {
     await page.goto(path)
     await expect(page.locator('#canvas')).toHaveCount(1)
     await expect(page.locator('main')).toBeVisible()
   }
 
   expect(webglWarnings).toEqual([])
+})
+
+test('changelog presents every reconstructed release and source evidence', async ({ page }) => {
+  await page.goto('/changelog')
+
+  await expect(page).toHaveTitle('Changelog · Furnace')
+  await expect(page.locator('ol > li')).toHaveCount(29)
+  await expect(page.getByRole('heading', { name: 'v0.2.4' })).toBeVisible()
+  await expect(page.getByText('Next', { exact: true })).toBeVisible()
+  await expect(page.getByText('Tagged · not published', { exact: true })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'View source commit for Furnace 0.2.3' }))
+    .toHaveAttribute('href', /github\.com\/amoreX\/furnace\/commit\/802bf36/)
+})
+
+test('mobile menu exposes changelog navigation and restores focus on Escape', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/changelog')
+
+  const menu = page.getByRole('button', { name: 'Menu' })
+  await menu.click()
+  const changelog = page.getByRole('link', { name: 'Changelog' })
+  await expect(changelog).toBeVisible()
+  await expect(changelog).toHaveAttribute('aria-current', 'page')
+
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('link', { name: 'Changelog' })).toHaveCount(0)
+  await expect(menu).toBeFocused()
 })
 
 test('starts in night mode and persists a day-mode choice', async ({ page }) => {
@@ -214,7 +242,7 @@ for (const viewport of [
   test(`keeps every primary route within the ${viewport.name} viewport`, async ({ page }) => {
     await page.setViewportSize(viewport)
 
-    for (const path of ['/', '/features', '/docs/getting-started']) {
+    for (const path of ['/', '/features', '/changelog', '/docs/getting-started']) {
       await page.goto(path, { waitUntil: 'networkidle' })
       await expect
         .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth))

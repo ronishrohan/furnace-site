@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTheme } from '../../hooks/useTheme.js'
 import CommandTeaser, { ScrambledText } from './CommandTeaser.jsx'
 
@@ -7,10 +7,10 @@ const VERSION_FALLBACK = '0.0.0'
 const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/
 
 const chromeLink =
-  'font-mono text-[12px] sm:text-[14px] uppercase text-white/95 no-underline cursor-pointer hover:text-accent hover-accent-glow'
+  'font-mono text-[12px] sm:text-[14px] uppercase text-white/95 no-underline cursor-pointer hover:text-accent hover-accent-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4'
 
 const activeLink =
-  'font-mono text-[12px] sm:text-[14px] uppercase no-underline text-accent accent-glow'
+  'font-mono text-[12px] sm:text-[14px] uppercase no-underline text-accent accent-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4'
 
 const themeToggle =
   'border-0 bg-none font-mono text-[12px] sm:text-[14px] text-white/95 px-2.5 py-1.5 cursor-pointer hover:text-accent hover-accent-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2'
@@ -19,7 +19,10 @@ export default function Chrome() {
   const location = useLocation()
   const navigate = useNavigate()
   const isDocs = location.pathname.startsWith('/docs')
+  const isChangelog = location.pathname === '/changelog'
   const [version, setVersion] = useState(VERSION_FALLBACK)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const mobileMenuButton = useRef(null)
   const { isNight, toggleTheme } = useTheme()
 
   useEffect(() => {
@@ -48,8 +51,24 @@ export default function Chrome() {
     return () => controller.abort()
   }, [])
 
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return undefined
+    const handleEscape = (event) => {
+      if (event.key !== 'Escape') return
+      setMobileMenuOpen(false)
+      mobileMenuButton.current?.focus()
+    }
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [mobileMenuOpen])
+
   const handleFeatures = (e) => {
     e.preventDefault()
+    setMobileMenuOpen(false)
     navigate('/', {
       replace: location.pathname === '/',
       state: { scrollToHomeSection: 'features-section' },
@@ -58,6 +77,7 @@ export default function Chrome() {
 
   const handleTalkToUs = (e) => {
     e.preventDefault()
+    setMobileMenuOpen(false)
     navigate('/', {
       replace: location.pathname === '/',
       state: { scrollToHomeSection: 'site-footer' },
@@ -78,19 +98,40 @@ export default function Chrome() {
           />
           <span className="font-mono text-[16px] uppercase whitespace-nowrap text-white/90">FURNACE</span>
         </Link>
-        <div className="flex items-center gap-3 font-mono text-[11px] uppercase">
-          <a href="#features-section" onClick={handleFeatures} className={chromeLink}>Features</a>
-          <Link to={isDocs ? '/' : '/docs'} className={isDocs ? activeLink : chromeLink}>Docs</Link>
-          <a href="https://github.com/amoreX/furnace" target="_blank" rel="noopener noreferrer" className={chromeLink}>GitHub</a>
-          <button
-            type="button"
-            aria-label="Toggle color theme"
-            className={`${themeToggle} px-0`}
-            onClick={toggleTheme}
+        <button
+          ref={mobileMenuButton}
+          type="button"
+          className={`${chromeLink} border border-white/35 bg-black/10 px-3 py-2`}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-site-menu"
+          onClick={() => setMobileMenuOpen((open) => !open)}
+        >
+          {mobileMenuOpen ? 'Close' : 'Menu'}
+        </button>
+        {mobileMenuOpen && (
+          <div
+            id="mobile-site-menu"
+            className="fixed right-4 top-14 flex min-w-[190px] flex-col items-end gap-4 border border-white/30 bg-[#1a1a1a]/95 px-5 py-5 text-right shadow-2xl"
           >
-            <span>{isNight ? 'DAY' : 'NIGHT'}</span>
-          </button>
-        </div>
+            <a href="#features-section" onClick={handleFeatures} className={chromeLink}>Features</a>
+            <Link to="/docs" className={isDocs ? activeLink : chromeLink} aria-current={isDocs ? 'page' : undefined}>Docs</Link>
+            <Link to="/changelog" className={isChangelog ? activeLink : chromeLink} aria-current={isChangelog ? 'page' : undefined}>Changelog</Link>
+            <a href="https://github.com/amoreX/furnace" target="_blank" rel="noopener noreferrer" className={chromeLink}>GitHub</a>
+            {!isDocs && (
+              <button type="button" onClick={handleTalkToUs} className={`${chromeLink} border-0 bg-transparent p-0`}>
+                Talk To Us
+              </button>
+            )}
+            <button
+              type="button"
+              aria-label="Toggle color theme"
+              className={`${themeToggle} px-0`}
+              onClick={toggleTheme}
+            >
+              <span>{isNight ? 'DAY' : 'NIGHT'}</span>
+            </button>
+          </div>
+        )}
       </nav>
 
       {/* Logo — top left */}
@@ -125,10 +166,18 @@ export default function Chrome() {
           Features
         </a>
         <Link
-          to={isDocs ? '/' : '/docs'}
+          to="/docs"
           className={isDocs ? activeLink : chromeLink}
+          aria-current={isDocs ? 'page' : undefined}
         >
           Docs
+        </Link>
+        <Link
+          to="/changelog"
+          className={isChangelog ? activeLink : chromeLink}
+          aria-current={isChangelog ? 'page' : undefined}
+        >
+          Changelog
         </Link>
         <a href="https://github.com/amoreX/furnace" target="_blank" rel="noopener noreferrer" className={chromeLink}>
           GitHub
@@ -145,7 +194,7 @@ export default function Chrome() {
       </nav>
 
       {/* Footer label — bottom left */}
-      {!isDocs && (
+      {!isDocs && !isChangelog && (
         <div className="fixed bottom-[75px] left-[75px] right-[180px] z-[200] hidden md:flex items-center gap-3 min-w-0">
           <a
             href="https://github.com/amoreX/furnace/issues"

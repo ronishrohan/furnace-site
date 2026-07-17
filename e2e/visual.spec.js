@@ -76,6 +76,34 @@ test('features mobile', async ({ page }) => {
   await expect(page).toHaveScreenshot('features-mobile.png', screenshotOptions)
 })
 
+test('changelog desktop', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await prepare(page, '/changelog')
+  await expect(page).toHaveScreenshot('changelog-desktop.png', {
+    ...screenshotOptions,
+    fullPage: true,
+  })
+})
+
+test('changelog day desktop', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('furnace-theme', 'day'))
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await prepare(page, '/changelog')
+  await expect(page).toHaveScreenshot('changelog-day-desktop.png', {
+    ...screenshotOptions,
+    fullPage: true,
+  })
+})
+
+test('changelog mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await prepare(page, '/changelog')
+  await expect(page).toHaveScreenshot('changelog-mobile.png', {
+    ...screenshotOptions,
+    fullPage: true,
+  })
+})
+
 test('footer mobile', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await prepare(page, '/')
