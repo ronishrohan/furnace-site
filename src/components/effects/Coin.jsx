@@ -208,7 +208,14 @@ export default function Coin({ size, normalMap, flipX = false, active = true }) 
 
   return (
     <div className="relative cursor-pointer" style={{ width: `${size}px`, height: `${size}px` }}>
-      <canvas ref={canvasRef} aria-hidden="true" className="h-full w-full" />
+      <img
+        src={normalMap}
+        alt=""
+        aria-hidden="true"
+        data-coin-fallback
+        className="absolute inset-0 h-full w-full rounded-full object-cover grayscale contrast-125 brightness-75"
+      />
+      <canvas ref={canvasRef} aria-hidden="true" className="relative z-[1] h-full w-full" />
     </div>
   )
 }

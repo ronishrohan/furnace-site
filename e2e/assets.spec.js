@@ -153,6 +153,40 @@ test('offscreen feature and contributor canvases retain their WebGL contexts', a
   expect(contextsAreAvailable).toBe(true)
 })
 
+test('mobile footer stays within a safe WebGL context budget', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/', { waitUntil: 'networkidle' })
+
+  const activeContexts = await page.evaluate(() =>
+    [...document.querySelectorAll('canvas')]
+      .filter((canvas) => {
+        const gl = canvas.getContext('webgl')
+        return gl && !gl.isContextLost()
+      })
+      .length
+  )
+
+  expect(activeContexts).toBeLessThanOrEqual(8)
+})
+
+test('mobile contributor portraits have a fallback when WebGL is unavailable', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.addInitScript(() => {
+    const getContext = HTMLCanvasElement.prototype.getContext
+    HTMLCanvasElement.prototype.getContext = function patchedGetContext(type, ...args) {
+      if (type === 'webgl' && this.closest('#site-footer')) return null
+      return getContext.call(this, type, ...args)
+    }
+  })
+  await page.goto('/', { waitUntil: 'networkidle' })
+  await page.locator('#site-footer').scrollIntoViewIfNeeded()
+
+  const portraits = page.locator('#site-footer a:visible img[data-coin-fallback]')
+  await expect(portraits).toHaveCount(2)
+  await expect(portraits.first()).toBeVisible()
+  await expect(portraits.last()).toBeVisible()
+})
+
 test('feature illustrations and normal maps load at matching dimensions', async ({ page }) => {
   const network = recordNetwork(page)
   await page.goto('/features', { waitUntil: 'networkidle' })
