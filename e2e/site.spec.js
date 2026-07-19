@@ -49,6 +49,26 @@ test.describe('routes', () => {
   }
 })
 
+test('keeps the app covered until startup assets are ready', async ({ page }) => {
+  let releaseBackground
+  const backgroundGate = new Promise((resolve) => {
+    releaseBackground = resolve
+  })
+  await page.route('**/assets/background/global-normal-map.png', async (route) => {
+    await backgroundGate
+    await route.continue()
+  })
+
+  const navigation = page.goto('/', { waitUntil: 'domcontentloaded' })
+  await expect(page.locator('#boot-loader')).toBeVisible()
+  await expect(page.locator('#root')).toHaveAttribute('aria-busy', 'true')
+
+  releaseBackground()
+  await navigation
+  await expect(page.locator('#boot-loader')).toHaveCount(0)
+  await expect(page.locator('#root')).not.toHaveAttribute('aria-busy', 'true')
+})
+
 test('keeps the React-owned background canvas stable across route changes', async ({ page }) => {
   const webglWarnings = []
   page.on('console', (message) => {

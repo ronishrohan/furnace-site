@@ -8,7 +8,7 @@ import Features from './pages/Features.jsx'
 import Docs from './pages/Docs.jsx'
 import Changelog from './pages/Changelog.jsx'
 
-export default function App() {
+export default function App({ onBackgroundReady }) {
   const location = useLocation()
   const isDocs = location.pathname.startsWith('/docs')
 
@@ -20,7 +20,7 @@ export default function App() {
 
   return (
     <>
-      <Background />
+      <Background onReady={onBackgroundReady} />
       <Chrome />
       <main className="relative z-10">
         <Routes>

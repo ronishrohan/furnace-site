@@ -7,7 +7,68 @@
   <meta name="description" content="Furnace is a terminal-first agentic coding harness with local sessions, typed tools, and permission gates.">
   <meta property="og:title" content="Furnace">
   <meta property="og:description" content="A terminal-first agentic coding harness. Built in the open, run it in your repository.">
+  <script>
+    (function () {
+      const THEME_KEY = 'furnace-theme';
+      let isNight = true;
+      try { isNight = localStorage.getItem(THEME_KEY) !== 'day'; } catch {}
+      document.documentElement.classList.toggle('theme-night', isNight);
+    })();
+  </script>
+  <style>
+    #boot-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+      background: #827f70;
+      color: rgba(255, 255, 255, 0.92);
+      transition: opacity 240ms ease, visibility 240ms ease;
+    }
+    .theme-night #boot-loader { background: #1a1a1a; }
+    #boot-loader.is-leaving { opacity: 0; visibility: hidden; }
+    .boot-loader__content {
+      width: min(280px, calc(100vw - 64px));
+      font-family: ui-monospace, monospace;
+      text-align: center;
+    }
+    .boot-loader__wordmark {
+      margin-bottom: 18px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+    }
+    .boot-loader__track {
+      position: relative;
+      height: 1px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.18);
+    }
+    .boot-loader__track::after {
+      position: absolute;
+      inset: 0;
+      content: '';
+      background: #ffe14d;
+      transform-origin: left;
+      animation: boot-loader-progress 1.1s ease-in-out infinite;
+    }
+    .theme-night .boot-loader__track::after { background: #5b8def; }
+    @keyframes boot-loader-progress {
+      0% { transform: translateX(-100%) scaleX(0.35); }
+      55% { transform: translateX(5%) scaleX(0.72); }
+      100% { transform: translateX(100%) scaleX(0.35); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #boot-loader { transition-duration: 0ms; }
+      .boot-loader__track::after { animation: none; transform: scaleX(0.72); }
+    }
+  </style>
   <link rel="icon" type="image/svg+xml" href="/assets/brand/furnace-logo.svg">
+  <link rel="preload" href="/fonts/DepartureMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/GeistMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/LibreBaskerville-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/LibreBaskerville-Italic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/brand/furnace-logo.svg" as="image" type="image/svg+xml">
   <link rel="preload" href="/assets/background/global-normal-map.png" as="image" type="image/png" fetchpriority="high">
   <link rel="preload" href="/assets/features/fork-conversation.avif" as="image" type="image/avif">
@@ -22,16 +83,13 @@
   <link rel="preload" href="/assets/contributors/ronish-normal-map.png" as="image" type="image/png">
 </head>
 <body>
-  <script>
-    (function () {
-      const THEME_KEY = 'furnace-theme';
-      let isNight = true;
-      try { isNight = localStorage.getItem(THEME_KEY) !== 'day'; } catch {}
-      document.documentElement.classList.toggle('theme-night', isNight);
-      document.body.classList.toggle('theme-night', isNight);
-    })();
-  </script>
-  <div id="root"></div>
+  <div id="boot-loader" role="status" aria-live="polite" aria-label="Loading Furnace">
+    <div class="boot-loader__content">
+      <div class="boot-loader__wordmark">FURNACE</div>
+      <div class="boot-loader__track" aria-hidden="true"></div>
+    </div>
+  </div>
+  <div id="root" aria-busy="true"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>

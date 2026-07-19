@@ -88,10 +88,19 @@ const FRAGMENT_SHADER = `
   }
 `
 
-export default function Background() {
+export default function Background({ onReady }) {
   const canvasRef = useRef(null)
   const rendererRef = useRef(null)
   const cancelContextReleaseRef = useRef(null)
+  const onReadyRef = useRef(onReady)
+  const hasSignaledReadyRef = useRef(false)
+  onReadyRef.current = onReady
+
+  const signalReady = useCallback(() => {
+    if (hasSignaledReadyRef.current) return
+    hasSignaledReadyRef.current = true
+    onReadyRef.current?.()
+  }, [])
 
   const draw = useCallback((time) => {
     const renderer = rendererRef.current
@@ -152,13 +161,20 @@ export default function Background() {
       if (disposed) return
 
       const gl = canvas.getContext('webgl', { antialias: false, alpha: false })
-      if (!gl) return
+      if (!gl) {
+        signalReady()
+        return
+      }
       currentContext = gl
       const program = createProgram(gl, FULLSCREEN_VERTEX_SHADER, FRAGMENT_SHADER)
-      if (!program) return
+      if (!program) {
+        signalReady()
+        return
+      }
       const buffer = createFullscreenQuad(gl, program)
       if (!buffer) {
         disposeGLResources(gl, { programs: [program] })
+        signalReady()
         return
       }
 
@@ -168,10 +184,13 @@ export default function Background() {
           textureSize.width = image.width
           textureSize.height = image.height
           requestRender()
+          signalReady()
         },
+        onError: signalReady,
       })
       if (!textureLoad) {
         disposeGLResources(gl, { buffers: [buffer], programs: [program] })
+        signalReady()
         return
       }
 
